@@ -24,3 +24,7 @@ dotnet restore
 dotnet run
 ```
 
+
+## Güvenlik Notu
+
+Bu proje bir öğrenme/staj çalışmasıdır. JWT gizli anahtarı gibi hassas bilgiler `appsettings.json` üzerinden okunmaktadır; gerçek bir üretim ortamında bu tür değerlerin ortam değişkenleri (environment variables) veya bir secret manager (örn. Azure Key Vault) üzerinden yönetilmesi önerilir.
