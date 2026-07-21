@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>XSS Test</title>
+</head>
+<body>
+    <h2>Ürün Arama (Güvensiz Gösterim)</h2>
+    <div id="sonuc-guvensiz"></div>
+
+    <h2>Ürün Arama (Güvenli Gösterim)</h2>
+    <div id="sonuc-guvenli"></div>
+
+    <script>
+        const kullaniciGirdisi = new URLSearchParams(window.location.search).get('mesaj') || 'Merhaba Dünya';
+
+        // ⚠️ GÜVENSİZ: innerHTML ile direkt basma
+        document.getElementById('sonuc-guvensiz').innerHTML = kullaniciGirdisi;
+
+        // ✅ GÜVENLİ: textContent ile basma (HTML olarak yorumlanmaz)
+        document.getElementById('sonuc-guvenli').textContent = kullaniciGirdisi;
+    </script>
+</body>
+</html>
