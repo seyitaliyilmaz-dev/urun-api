@@ -6,17 +6,17 @@ using urun_api;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddHttpClient();
 
-// Veritabanı bağlantısını ekle
 builder.Services.AddDbContext<SirketDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SirketDB")));
 
-// JWT Authentication ekle
-var gizliAnahtar = "Bu_Cok_Gizli_Ve_En_Az_32_Karakter_Olmali_Anahtar!";
+// JWT Authentication - anahtar artık appsettings.json'dan okunuyor
+var gizliAnahtar = builder.Configuration["Jwt:GizliAnahtar"]
+    ?? throw new InvalidOperationException("Jwt:GizliAnahtar ayarlanmamış.");
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -34,7 +34,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

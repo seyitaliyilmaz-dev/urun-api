@@ -10,10 +10,16 @@ namespace urun_api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
+    private readonly IConfiguration _configuration;
+
     // Basitlik için sabit kullanıcı bilgisi (gerçek hayatta veritabanından gelir, şifre hash'lenir)
     private const string SabitKullaniciAdi = "admin";
     private const string SabitSifre = "1234";
-    private const string GizliAnahtar = "Bu_Cok_Gizli_Ve_En_Az_32_Karakter_Olmali_Anahtar!";
+
+    public AuthController(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
 
     public class GirisBilgisi
     {
@@ -29,8 +35,11 @@ public class AuthController : ControllerBase
             return Unauthorized(new { mesaj = "Kullanıcı adı veya şifre hatalı." });
         }
 
+        var gizliAnahtar = _configuration["Jwt:GizliAnahtar"]
+            ?? throw new InvalidOperationException("Jwt:GizliAnahtar ayarlanmamış.");
+
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(GizliAnahtar);
+        var key = Encoding.UTF8.GetBytes(gizliAnahtar);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
