@@ -18,6 +18,9 @@ public class UrunlerController : ControllerBase
     }
 
     // GET: api/urunler
+    // [AllowAnonymous]: sınıf seviyesindeki [Authorize]'ı bu metot için geçersiz kılar.
+    // Böylece React arayüzü, token göndermeden ürün listesini görebilir.
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<List<Urun>>> GetAll()
     {

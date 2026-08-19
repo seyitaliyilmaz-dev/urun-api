@@ -11,9 +11,19 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddHttpClient();
 
-// Swagger/OpenAPI dokümantasyon servisini ekliyoruz (basit kurulum).
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// CORS: React uygulamasının (localhost:5173) bu API'ye istek atmasına izin veriyoruz.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 // Veritabanı bağlantısını ekle
 builder.Services.AddDbContext<SirketDbContext>(options =>
@@ -44,14 +54,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-
-    // Swagger UI'ı sadece geliştirme ortamında açıyoruz.
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// CORS middleware'i, Authentication'dan ÖNCE eklenmeli.
+app.UseCors("ReactApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
